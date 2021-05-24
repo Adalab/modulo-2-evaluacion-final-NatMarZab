@@ -1,9 +1,18 @@
 .input {
   border: solid black 1px;
 }
-.item {
+.list {
   list-style: none;
 }
 .hidden {
   display: none;
+}
+.card {
+  display: flex;
+  flex-direction: column;
+  color: rebeccapurple;
+  margin-bottom: 20px;
+}
+.image {
+  width: 200px;
 }
