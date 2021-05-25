@@ -38,9 +38,9 @@ function paintList() {
     const identifying = arrayTriple[i].id;
     const placeHolderRef = "https://via.placeholder.com/100x150/ffffff/666666/?text=TV";
     if (image === null) {
-      seriesList += `<li class="js-card" data-id="${identifying}"><div class="card"><img class="image" src="${placeHolderRef}" alt="sin cartel">${titleSeries}</div></li>`;
+      seriesList += `<li class="js-card card" data-id="${identifying}"><div class="childCard"><img class="image" src="${placeHolderRef}" alt="sin cartel">${titleSeries}</div></li>`;
     } else {
-      seriesList += `<li class="js-card" data-id="${identifying}"><div class="card"><img class="image" src="${image}" alt="cartel">${titleSeries}</div></li>`;
+      seriesList += `<li class="js-card card" data-id="${identifying}"><div class="childCard"><img class="image" src="${image}" alt="cartel">${titleSeries}</div></li>`;
     }
     list.innerHTML = seriesList; 
   }
@@ -59,7 +59,7 @@ function addListenersToCards() {
   }
 }
 function handleClickCard(event) {
-  // const whereTheUserClicked = event.target; //no hace falta
+  //const whereTheUserClicked = event.target; //no hace falta
   //PASO 1: identifica la li pulsada:
   const whereIAddedTheEvent = event.currentTarget;
   //PASO 2: obtener la info de esa card (<li>):
