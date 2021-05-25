@@ -31,8 +31,8 @@ function getList() {
     });
 }
 function paintList() {
-    // const divResults = document.querySelector(".result");
-    // divResults.innerHTML = `<h3>Resultados:</h3>`;
+  // const divResults = document.querySelector(".result");
+  // divResults.innerHTML = `<h3>Resultados:</h3>`; No funciona porque pisa los lis.
   let seriesList = "";
   for (let i = 0; i < arrayTriple.length; i++) {
     const image = arrayTriple[i].image;
@@ -89,7 +89,6 @@ function paintFavourites() {
     // divFavourites.innerHTML = `<h3>Favoritas:</h3>`;
     let seriesList = "";
     const favouritesList = document.querySelector(".js-favourites");
-    favouritesList.innerHTML = "";
     for (let i = 0; i < favourites.length; i++) {
       const image = favourites[i].image;
       const titleSeries = favourites[i].name;
@@ -106,7 +105,7 @@ function paintFavourites() {
   function getFromLocalStorage() {
     const arrayFavourites = JSON.parse(localStorage.getItem("favourites"));
     if(arrayFavourites) {
-        paintFavourites();
+        paintFavourites(arrayFavourites);
     }
     // si es distinto de null en el localStorage
     //si es distinto, añadirlo al array de favourites
