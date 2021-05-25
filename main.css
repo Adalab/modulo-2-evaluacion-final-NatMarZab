@@ -26,3 +26,6 @@
 .image {
   width: 200px;
 }
+.favouriteSeries {
+  border: solid rebeccapurple 1px;
+}

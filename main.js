@@ -31,6 +31,8 @@ function getList() {
     });
 }
 function paintList() {
+    // const divResults = document.querySelector(".result");
+    // divResults.innerHTML = `<h3>Resultados:</h3>`;
   let seriesList = "";
   for (let i = 0; i < arrayTriple.length; i++) {
     const image = arrayTriple[i].image;
@@ -50,8 +52,9 @@ function handleSearch(event) {
   event.preventDefault();
   getList();
 }
+getFromLocalStorage();
 button.addEventListener("click", handleSearch);
-//FAVORITAS:
+
 function addListenersToCards() {
   const allCards = document.querySelectorAll(".js-card");
   for (const card of allCards) {
@@ -71,18 +74,21 @@ function handleClickCard(event) {
     //"si no coincide con ningun elemento que esté en favoritos..."
     const isInsideArrTrip = arrayTriple.find((idFavourite) => idFavourite.id === cardId);
    // console.log(isInsideArrTrip)
-   favourites.push(isInsideArrTrip); //lo meto y relleno mi array SÓLO con los id, PERO NO LE ESTOY METIENDO EL OBJETO ENTERO
+   favourites.push(isInsideArrTrip);
   }
-  else { //"si SÍ que coincide, entonces lo quito creando un nuevo array con todos los elementos que NO SEAN (o que sean distintos de) cardId".
+  else { 
     favourites = favourites.filter((idFavourite) => idFavourite.id !== cardId);
   }
+  localStorage.setItem("favourites", JSON.stringify(favourites));
   console.log(favourites);
   paintFavourites();
-  localStorage.setItem("favourites", JSON.stringify(favourites));
+  
 }
 function paintFavourites() {
+    // const divFavourites = document.querySelector(".js-divFavourites");
+    // divFavourites.innerHTML = `<h3>Favoritas:</h3>`;
     let seriesList = "";
-    const favouritesList = document.querySelector(".favourites");
+    const favouritesList = document.querySelector(".js-favourites");
     favouritesList.innerHTML = "";
     for (let i = 0; i < favourites.length; i++) {
       const image = favourites[i].image;
@@ -90,22 +96,20 @@ function paintFavourites() {
       const identifying = favourites[i].id;
       const placeHolderRef = "https://via.placeholder.com/100x150/ffffff/666666/?text=TV";
       if (image === null) {
-        seriesList += `<li class="js-card" data-id="${identifying}"><div class="card"><img class="image" src="${placeHolderRef}" alt="sin cartel">${titleSeries}</div></li>`;
+        seriesList += `<li class="js-card card" data-id="${identifying}"><div class="childCard"><img class="image" src="${placeHolderRef}" alt="sin cartel">${titleSeries}</div></li>`;
       } else {
-        seriesList += `<li class="js-card" data-id="${identifying}"><div class="card"><img class="image" src="${image}" alt="cartel">${titleSeries}</div></li>`;
+        seriesList += `<li class="js-card card data-id="${identifying}"><div class="childCard"><img class="image" src="${image}" alt="cartel">${titleSeries}</div></li>`;
       }
     }
     favouritesList.innerHTML = seriesList; // lo hago aqui una vez ya he conseguido todos mis lis.
-  
-
   }
   function getFromLocalStorage() {
-     const localFavourites = JSON.parse(localStorage.getItem("favourites"));
-     if(localFavourites !== null) {
-         paintFavourites();
-     }
-     // si es distinto de null en el localStorage
-     //si es distinto, añadirlo al array de favourites
-     //pintarlo llamando a la función pintar las favoritas
-  }
-  getFromLocalStorage();
+    const arrayFavourites = JSON.parse(localStorage.getItem("favourites"));
+    if(arrayFavourites) {
+        paintFavourites();
+    }
+    // si es distinto de null en el localStorage
+    //si es distinto, añadirlo al array de favourites
+    //pintarlo llamando a la función pintar las favoritas
+ }
+ 
