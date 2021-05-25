@@ -1,85 +1,111 @@
 'use strict';
-
 const input = document.querySelector(".input");
 const button = document.querySelector(".button");
 const list = document.querySelector(".list");
-let arrayDoble = [];
+const section = document.querySelector(".js-section");
+let arrayTriple = [];
 let favourites = [];
-// if(localStorage.getItem("arrayDoble") === null) {
-// getList(); pero tengo el problema de que el inputValue depende de un evento q se produce más adelante!!
-// }
 
 function getList() {
-    const inputValue = input.value;
-    fetch(`//api.tvmaze.com/search/shows?q=${inputValue}`)
-    .then(response => response.json())
+  const inputValue = input.value;
+  fetch(`//api.tvmaze.com/search/shows?q=${inputValue}`)
+    .then((response) => response.json())
     .then((data) => {
-         arrayDoble = new Array(data.length);
-        for(let i = 0; i < data.length; i++) {
-            arrayDoble[i] = new Array(3);
+      for (let i = 0; i < data.length; i++) {
+        if (data[i].show.image) {
+          arrayTriple.push({
+            image: `${data[i].show.image.medium}`,
+            name: `${data[i].show.name}`,
+            id: `${data[i].show.id}`,
+          });
+        } else {
+          arrayTriple.push({
+            image: `https://via.placeholder.com/100x150/ffffff/666666/?text=TV`,
+            name: `${data[i].show.name}`,
+            id: `${data[i].show.id}`,
+          });
         }
-        for(let i = 0; i < data.length; i++) {
-            arrayDoble[i][0] = data[i].show.image;
-         //   console.log(arrayDoble[i][0].medium); /FUNCIONA
-            arrayDoble[i][1] = data[i].show.name;
-            arrayDoble[i][2] = data[i].show.id;
-        }
-        localStorage.setItem("arrayDoble", JSON.stringify(arrayDoble));
-        paintList(arrayDoble); //FUNCIONA!!!!!
+        console.log(arrayTriple);
+        paintList(); 
       }
-    );
+    });
 }
-function paintList(arrayDoble){
-    let seriesList = "";
-  //  console.log(arrayDoble[5][0].medium); ¡¡funciona!!
-    for (let i = 0;  i < arrayDoble.length; i++) {
-        const image = arrayDoble[i][0];        
-        const titleSeries= arrayDoble[i][1];
-        const identifying = arrayDoble[i][2];
-        const placeHolderRef = "https://via.placeholder.com/100x150/ffffff/666666/?text=TV";
-        if(image === null) {
-            seriesList = `<li class="js-card" data-id="${identifying}"><div class="card"><img class="image" src="${placeHolderRef}" alt="sin cartel">${titleSeries}</div></li>`;
-        }
-        else {
-            seriesList = `<li class="js-card" data-id="${identifying}"><div class="card"><img class="image" src="${image.medium}" alt="cartel">${titleSeries}</div></li>`;
-        }
-        list.innerHTML += seriesList;
-   }
-   addListenersToCards();
-   //Pintar las favoritas: buscar si el elmento que se está pintando está en el array de favoritas. Sustituyo el cardID por la referencia a ese elemento q tengo dentro de esta función, q es identifying:
-   const isInside = favourites.find(idFavourite => idFavourite === identifying);
+function paintList() {
+  let seriesList = "";
+  for (let i = 0; i < arrayTriple.length; i++) {
+    const image = arrayTriple[i].image;
+    const titleSeries = arrayTriple[i].name;
+    const identifying = arrayTriple[i].id;
+    const placeHolderRef = "https://via.placeholder.com/100x150/ffffff/666666/?text=TV";
+    if (image === null) {
+      seriesList += `<li class="js-card" data-id="${identifying}"><div class="card"><img class="image" src="${placeHolderRef}" alt="sin cartel">${titleSeries}</div></li>`;
+    } else {
+      seriesList += `<li class="js-card" data-id="${identifying}"><div class="card"><img class="image" src="${image}" alt="cartel">${titleSeries}</div></li>`;
+    }
+    list.innerHTML = seriesList; 
+  }
+  addListenersToCards();
 }
 function handleSearch(event) {
-    event.preventDefault();
-    getList();
+  event.preventDefault();
+  getList();
 }
 button.addEventListener("click", handleSearch);
-
 //FAVORITAS:
-
 function addListenersToCards() {
-    const allCards = document.querySelectorAll(".js-card");
-    for(const card of allCards) {
-        card.addEventListener("click", handleClickCard);
-    }
+  const allCards = document.querySelectorAll(".js-card");
+  for (const card of allCards) {
+    card.addEventListener("click", handleClickCard);
+  }
 }
 function handleClickCard(event) {
-   // const whereTheUserClicked = event.target; //no hace falta
-    //PASO 1: identifica la li pulsada:
-    const whereIAddedTheEvent = event.currentTarget; 
-    //PASO 2: obtener la info de esa card:
-    const cardId = whereIAddedTheEvent.dataset.id;
-    //console.log(cardId) funciona!!
-    //PASO 3: buscar si el elmento por el que identifico la card está en el array de favoritas:
-    const isInside = favourites.find(idFavourite => idFavourite === cardId);
-    //PASO 4: guardarla en o quitarla del array de favoritas, guardando o quitando el elemento identificador:
-    if(isInside === undefined) {
-        favourites.push(cardId);
-    }
-    else {
-        favourites = favourites.filter(idFavourite !== cardId);
-    }
-    // console.log(favourites); funciona!! 
-    //PASO 5: pintar las favoritas:
-    //paintList();
+  // const whereTheUserClicked = event.target; //no hace falta
+  //PASO 1: identifica la li pulsada:
+  const whereIAddedTheEvent = event.currentTarget;
+  //PASO 2: obtener la info de esa card (<li>):
+  const cardId = whereIAddedTheEvent.dataset.id;
+  //console.log(cardId) 
+  const isInside = favourites.find((idFavourite) => idFavourite.id === cardId); 
+  whereIAddedTheEvent.classList.toggle("card2");
+  if(isInside === undefined) {
+    //"si no coincide con ningun elemento que esté en favoritos..."
+    const isInsideArrTrip = arrayTriple.find((idFavourite) => idFavourite.id === cardId);
+   // console.log(isInsideArrTrip)
+   favourites.push(isInsideArrTrip); //lo meto y relleno mi array SÓLO con los id, PERO NO LE ESTOY METIENDO EL OBJETO ENTERO
+  }
+  else { //"si SÍ que coincide, entonces lo quito creando un nuevo array con todos los elementos que NO SEAN (o que sean distintos de) cardId".
+    favourites = favourites.filter((idFavourite) => idFavourite.id !== cardId);
+  }
+  console.log(favourites);
+  paintFavourites();
+  localStorage.setItem("favourites", JSON.stringify(favourites));
 }
+function paintFavourites() {
+    let seriesList = "";
+    const favouritesList = document.querySelector(".favourites");
+    favouritesList.innerHTML = "";
+    for (let i = 0; i < favourites.length; i++) {
+      const image = favourites[i].image;
+      const titleSeries = favourites[i].name;
+      const identifying = favourites[i].id;
+      const placeHolderRef = "https://via.placeholder.com/100x150/ffffff/666666/?text=TV";
+      if (image === null) {
+        seriesList += `<li class="js-card" data-id="${identifying}"><div class="card"><img class="image" src="${placeHolderRef}" alt="sin cartel">${titleSeries}</div></li>`;
+      } else {
+        seriesList += `<li class="js-card" data-id="${identifying}"><div class="card"><img class="image" src="${image}" alt="cartel">${titleSeries}</div></li>`;
+      }
+    }
+    favouritesList.innerHTML = seriesList; // lo hago aqui una vez ya he conseguido todos mis lis.
+  
+
+  }
+  function getFromLocalStorage() {
+     const localFavourites = JSON.parse(localStorage.getItem("favourites"));
+     if(localFavourites !== null) {
+         paintFavourites();
+     }
+     // si es distinto de null en el localStorage
+     //si es distinto, añadirlo al array de favourites
+     //pintarlo llamando a la función pintar las favoritas
+  }
+  getFromLocalStorage();

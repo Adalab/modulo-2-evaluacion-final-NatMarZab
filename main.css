@@ -8,10 +8,16 @@
   display: none;
 }
 .card {
+  width: 500px;
   display: flex;
   flex-direction: column;
   color: rebeccapurple;
   margin-bottom: 20px;
+  background-color: seashell;
+}
+.card2 {
+  background-color: rebeccapurple;
+  color: seashell;
 }
 .image {
   width: 200px;
